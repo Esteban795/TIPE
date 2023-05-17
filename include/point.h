@@ -22,8 +22,9 @@ struct Spring {
 };
 
 struct Point { 
-    struct Stick* s1;
-    struct Stick* s2;
+    struct Spring* springs;
+    int nb_springs;
+    int available_spring_index; 
     vect2 pos;
     vect2 prev_pos;
     vect2 init_pos;

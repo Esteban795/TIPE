@@ -64,7 +64,7 @@ int main(void){
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         for (int i = 0;i < NB_POINTS;i++){
-            //update_point(&points[i],DT,0.01,force);
+            update_point(&points[i],DT,0.01,force);
             int x = points[i].pos.x;
             int y = points[i].pos.y;
             DrawCircle(renderer,x,y,10);
