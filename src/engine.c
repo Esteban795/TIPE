@@ -1,10 +1,11 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include "../include/point.h"
+#include "../include/spring.h"
 
-
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 700
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#define DT 1
 
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
    const int32_t diameter = (radius * 2);
@@ -52,19 +53,35 @@ int main(void){
     int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"test");
     if (status == 1) return EXIT_FAILURE;
     point* points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
+    spring* springs = create_springs(points);
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    for (int i = 0;i < NB_POINTS;i++){
-    
-        int x = points[i].pos.x;
-        int y = points[i].pos.y;
-        DrawCircle(renderer,x,y,20);
-
-       print_point(points[i]);
+    int count = 0;
+    vect2 force = {.x = 3.0 , .y = 9.81};
+    while (count < 100) {
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+        for (int i = 0;i < NB_POINTS;i++){
+            //update_point(&points[i],DT,0.01,force);
+            int x = points[i].pos.x;
+            int y = points[i].pos.y;
+            DrawCircle(renderer,x,y,10);
+            //print_point(points[i]);
+        }
+        for (int i = 0; i < NB_SPRINGS;i++){
+          int p1_x = springs[i].p1->pos.x;
+          int p1_y = springs[i].p1->pos.y;
+          int p2_x = springs[i].p2->pos.x;
+          int p2_y = springs[i].p2->pos.y;
+          SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
+        }
+        count++;
+        SDL_RenderPresent(renderer);
+        SDL_Delay(100);
     }
-    SDL_RenderPresent(renderer);
-    SDL_Delay(3000);
+
     free(points);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

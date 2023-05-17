@@ -19,7 +19,7 @@ vect2 vect2_diff(vect2 v1,vect2 v2);
 /*
 Divide vector coordinates by a floating point number
 */
-vect2 vect2_divide(vect2 v,float n);
+vect2 vect2_divide(vect2 v,double n);
 
 /*
 Returns length of the vector

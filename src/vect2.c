@@ -11,7 +11,7 @@ vect2 vect2_diff(vect2 v1,vect2 v2){
 /*
 Divide vector coordinates by a floating point number
 */
-vect2 divide(vect2 v,double n){
+vect2 vect2_divide(vect2 v,double n) {
     vect2 temp = {.x = v.x / n,.y = v.y / n};
     return temp;
 }
