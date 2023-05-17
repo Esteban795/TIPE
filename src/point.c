@@ -8,7 +8,7 @@ point create_point(double x, double y, bool fixed){
     p.pos = pos;
     p.init_pos = pos;
     p.prev_pos = pos;
-    p.fixed = fixed;
+    p.is_fixed = fixed;
     p.s1 = NULL;
     p.s2 = NULL;
     return p;
@@ -46,5 +46,17 @@ point* create_points(int WIDTH,int HEIGHT){
 
 
 void print_point(point p){
-    printf("Pos : (%f;%f), fixed : %d",p.pos.x,p.pos.y,p.fixed);
+    printf("Pos : (%f;%f), fixed : %d\n",p.pos.x,p.pos.y,p.is_fixed);
+}
+
+//Verlet integration
+void update_point(point* p,double dt, double drag, vect2 acceleration){
+    if (p->is_fixed) return; //points that are not affected by any force.
+    float new_x = p->pos.x + (p->pos.x - p->prev_pos.x) * (1.0f - drag) + acceleration.x * (1.0f - drag) * dt * dt;
+    float new_y = p->pos.y + (p->pos.y - p->prev_pos.y) * (1.0f - drag) + acceleration.y * (1.0f - drag) * dt * dt;
+    p->prev_pos = p->pos;
+    p->pos.x = new_x;
+    p->pos.y = new_y;
+    vect2 temp_vel = vect2_diff(p->pos,p->prev_pos);
+    p->vel = vect2_divide(temp_vel,1/dt);
 }

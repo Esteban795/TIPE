@@ -28,7 +28,7 @@ struct Point {
     vect2 prev_pos;
     vect2 init_pos;
     vect2 vel;
-    bool fixed;
+    bool is_fixed;
 };
 
 typedef struct Spring spring;
@@ -38,4 +38,5 @@ point* create_points(int WIDTH,int HEIGHT);
 
 void print_point(point p);
 
+void update_point(point* p,double dt, double drag, vect2 acceleration);
 #endif
