@@ -5,8 +5,8 @@
 
 
 struct Vect2 {
-    float x;
-    float y;
+    double x;
+    double y;
 };
 
 typedef struct Vect2 vect2;
@@ -24,10 +24,8 @@ vect2 vect2_divide(vect2 v,float n);
 /*
 Returns length of the vector
 */
-float vect2_length(vect2 p);
+double vect2_length(vect2 p);
 
-float dot_product(vect2 v1,vect2 v2);
-
-
+double dot_product(vect2 v1,vect2 v2);
 
 #endif
