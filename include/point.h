@@ -5,13 +5,20 @@
 #include <stdbool.h>
 #include "vect2.h"
 
+
+#define NB_POINTS 8
+#define BUILDING_HWIDTH 50
+#define BUILDING_HHEIGHT 50
+
 struct Spring;
 struct Point;
 
 struct Spring {
     struct Point* p1;
     struct Point* p2;
-    float length;
+    double length;
+    double stiffness;
+    double damping;
 };
 
 struct Point { 
@@ -27,5 +34,8 @@ struct Point {
 typedef struct Spring spring;
 typedef struct Point point;
 
+point* create_points(int WIDTH,int HEIGHT);
+
+void print_point(point p);
 
 #endif
