@@ -22,22 +22,28 @@ struct Spring {
 };
 
 struct Point { 
-    struct Spring* springs;
+    struct Spring** springs;
     int nb_springs;
     int available_spring_index; 
     vect2 pos;
-    vect2 prev_pos;
-    vect2 init_pos;
     vect2 vel;
+    vect2 force;
+    double mass;
     bool is_fixed;
 };
 
 typedef struct Spring spring;
 typedef struct Point point;
 
-point* create_points(int WIDTH,int HEIGHT);
+point** create_points(int WIDTH,int HEIGHT);
 
-void print_point(point p);
+void update_point(point* p,double dt);
 
-void update_point(point* p,double dt, double drag, vect2 acceleration);
+void apply_force(point* p,vect2 f);
+
+void update_positions(point** points,double dt);
+
+void update_velocities(point** points,double dt);
+
+void clear_forces(point** points);
 #endif

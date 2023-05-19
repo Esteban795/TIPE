@@ -28,4 +28,7 @@ double vect2_length(vect2 p);
 
 double dot_product(vect2 v1,vect2 v2);
 
+vect2 vect2_add(vect2 v1, vect2 v2);
+
+vect2 vect2_multiply(vect2 v1, double n);
 #endif

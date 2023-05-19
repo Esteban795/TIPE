@@ -3,16 +3,17 @@
 
 #include "point.h"
 
-#define NB_SPRINGS 13
+#define NB_SPRINGS 19
 
-#define RIGID_STIFFNESS 1.0
-#define SOFT_STIFFNESS 0.8 
-#define RIGID_DAMPING 1.0
-#define SOFT_DAMPING 0.8
+#define RIGID_STIFFNESS 10
+#define SOFT_STIFFNESS 2
+#define RIGID_DAMPING 10
+#define SOFT_DAMPING 5
 
 
-spring* create_springs(point* points);
+spring** create_springs(point** points);
 
+void update_spring(spring* s);
 
 
 #endif

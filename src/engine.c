@@ -3,9 +3,11 @@
 #include "../include/point.h"
 #include "../include/spring.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
-#define DT 1
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
+#define DT 0.016
+
+
 
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
    const int32_t diameter = (radius * 2);
@@ -47,42 +49,89 @@ int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, 
     return 0;
 }
 
+
+int events_handling(point** points){
+    SDL_Event e;
+    while (SDL_PollEvent(&e)){
+        switch (e.type) {
+          case SDL_QUIT:
+              return 1;
+          
+          case SDL_KEYDOWN: {
+              if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
+              if (e.key.keysym.sym == SDLK_LEFT) {
+                for (int i = 0; i < NB_POINTS;i++){
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 50; 
+                                
+                }
+              }
+              if (e.key.keysym.sym == SDLK_RIGHT) {
+                for (int i = 0; i < NB_POINTS;i++){
+                  if (!points[i]->is_fixed) points[i]->pos.x += 50;    
+                  
+                }
+              }
+              
+            }
+          default:
+              break;
+        } 
+    }
+  return 0;
+}
+
+int euler_step(SDL_Renderer* renderer,point** points,spring** springs,double dt){
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    clear_forces(points);
+    int res = events_handling(points);
+    for (int i = 0; i < NB_SPRINGS;i++){
+        update_spring(springs[i]);
+        int p1_x = springs[i]->p1->pos.x;
+        int p1_y = springs[i]->p1->pos.y;
+        int p2_x = springs[i]->p2->pos.x;
+        int p2_y = springs[i]->p2->pos.y;
+        SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
+    }
+    update_positions(points,dt);
+    update_velocities(points,dt);
+    for (int i = 0; i < NB_POINTS;i++){
+        int x = points[i]->pos.x;
+        int y = points[i]->pos.y;
+        DrawCircle(renderer,x,y,10);
+    }
+    SDL_RenderPresent(renderer);
+    return res;
+}
+
 int main(void){
     SDL_Window* window;
     SDL_Renderer* renderer;
     int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"test");
     if (status == 1) return EXIT_FAILURE;
-    point* points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
-    spring* springs = create_springs(points);
+    point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
+    spring** springs = create_springs(points);
+    
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    int count = 0;
-    vect2 force = {.x = 3.0 , .y = 9.81};
-    while (count < 100) {
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        for (int i = 0;i < NB_POINTS;i++){
-            update_point(&points[i],DT,0.01,force);
-            int x = points[i].pos.x;
-            int y = points[i].pos.y;
-            DrawCircle(renderer,x,y,10);
-            //print_point(points[i]);
-        }
-        for (int i = 0; i < NB_SPRINGS;i++){
-          int p1_x = springs[i].p1->pos.x;
-          int p1_y = springs[i].p1->pos.y;
-          int p2_x = springs[i].p2->pos.x;
-          int p2_y = springs[i].p2->pos.y;
-          SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
-        }
-        count++;
-        SDL_RenderPresent(renderer);
-        SDL_Delay(100);
+    
+    while (true) {
+      int res = events_handling(points);
+      if (res == 1) break;
+      if (euler_step(renderer,points,springs,DT) == -1) break;
+      SDL_Delay(16);
     }
-
+    for (int i = 0; i < NB_POINTS; i++){
+      free(points[i]);
+    }
     free(points);
+
+    for (int i = 0; i < NB_SPRINGS; i++){
+      free(springs[i]);
+    }
+    free(springs);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     return 0;

@@ -2,16 +2,17 @@
 
 
 
-point create_point(double x, double y, bool fixed,int nb_springs){
-    point p;
+point* create_point(double x, double y, bool fixed,int nb_springs){
+    point* p = malloc(sizeof(point));
     vect2 pos = {.x = x, .y = y};
-    p.pos = pos;
-    p.init_pos = pos;
-    p.prev_pos = pos;
-    p.is_fixed = fixed;
-    p.nb_springs = nb_springs;
-    p.springs = malloc(sizeof(spring) * nb_springs);
-    p.available_spring_index = 0;
+    p->pos = pos;
+    p->is_fixed = fixed;
+    p->nb_springs = nb_springs;
+    p->springs = malloc(sizeof(spring) * nb_springs);
+    p->available_spring_index = 0;
+    vect2 zero_vect = {.x = 0.0, .y = 0.0};
+    p->force = zero_vect;
+    p->mass = 1.0;
     return p;
 }
 
@@ -31,35 +32,51 @@ o                         o               o                         o   7
                         5 o             6 o
 
 */
-point* create_points(int WIDTH,int HEIGHT){
-    point* points = malloc(sizeof(point) * NB_POINTS);
+point** create_points(int WIDTH,int HEIGHT){
+    point** points = malloc(sizeof(point*) * NB_POINTS);
     vect2 mid = {.x = WIDTH / 2, .y = HEIGHT/2};
 
-    points[0] = create_point(WIDTH/4,mid.y,true,1);
-    points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,1);
+    points[0] = create_point(WIDTH/4,mid.y,true,3);
+    points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,3);
 
     points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
     points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
-    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
-    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
-    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
-    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
+    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,5);
+    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,5);
+    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
+    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
     return points;
 }
 
 
-void print_point(point p){
-    printf("Pos : (%f;%f), fixed : %d\n",p.pos.x,p.pos.y,p.is_fixed);
+void apply_force(point* p,vect2 f){
+    p->force = vect2_add(p->force,f);
 }
 
-//Verlet integration
-void update_point(point* p,double dt, double drag, vect2 acceleration){
-    if (p->is_fixed) return; //points that are not affected by any force.
-    float new_x = p->pos.x + (p->pos.x - p->prev_pos.x) * (1.0f - drag) + acceleration.x * (1.0f - drag) * dt * dt;
-    float new_y = p->pos.y + (p->pos.y - p->prev_pos.y) * (1.0f - drag) + acceleration.y * (1.0f - drag) * dt * dt;
-    p->prev_pos = p->pos;
-    p->pos.x = new_x;
-    p->pos.y = new_y;
-    vect2 temp_vel = vect2_diff(p->pos,p->prev_pos);
-    p->vel = vect2_divide(temp_vel,1/dt);
+void clear_forces(point** points){
+    for (int i = 0; i < NB_POINTS; i++){
+        points[i]->force.x = 0.0;
+        points[i]->force.y = 0.0;
+    }
+}
+
+//Euler integration to update every points position
+void update_positions(point** points,double dt){
+    for (int i = 0; i < NB_POINTS; i++){
+        if (!points[i]->is_fixed) {
+            vect2 temp = vect2_multiply(points[i]->vel,dt);
+            points[i]->pos = vect2_add(points[i]->pos,temp);
+        }
+    }
+    
+}
+
+void update_velocities(point** points,double dt){
+    for (int i = 0; i < NB_POINTS; i++){
+        if (!points[i]->is_fixed) {
+            vect2 accel = vect2_multiply(points[i]->force,1.0/points[i]->mass);
+            vect2 temp = vect2_multiply(accel,dt);
+            points[i]->vel = vect2_add(points[i]->vel,temp);
+        }
+    }
 }
