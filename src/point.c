@@ -38,12 +38,12 @@ point* create_points(int WIDTH,int HEIGHT){
     points[0] = create_point(WIDTH/4,mid.y,true,1);
     points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,1);
 
-    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,4);
-    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,4);
-    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,2);
-    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,2);
-    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,2);
-    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,2);
+    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
+    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
+    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
+    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
+    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
+    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
     return points;
 }
 

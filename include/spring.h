@@ -3,7 +3,7 @@
 
 #include "point.h"
 
-#define NB_SPRINGS 9
+#define NB_SPRINGS 13
 
 #define RIGID_STIFFNESS 1.0
 #define SOFT_STIFFNESS 0.8 
