@@ -2,10 +2,12 @@
 #include <stdbool.h>
 #include "../include/point.h"
 #include "../include/spring.h"
+#include "../include/stick.h"
+
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-#define DT 0.016
+#define DT 0.006
 
 
 
@@ -50,7 +52,7 @@ int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, 
 }
 
 
-int events_handling(point** points){
+int events_handling(point** points,int* count){
     SDL_Event e;
     while (SDL_PollEvent(&e)){
         switch (e.type) {
@@ -60,12 +62,16 @@ int events_handling(point** points){
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
+                *count = -50;
+                if (*count > 0) return;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 50; 
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
                                 
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
+                *count = -50;
+                if (*count > 0) return;
                 for (int i = 0; i < NB_POINTS;i++){
                   if (!points[i]->is_fixed) points[i]->pos.x += 50;    
                   
@@ -80,29 +86,44 @@ int events_handling(point** points){
   return 0;
 }
 
-int euler_step(SDL_Renderer* renderer,point** points,spring** springs,double dt){
+void euler_step(SDL_Renderer* renderer,point** points,spring** springs,stick* sticks,double dt){
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
     clear_forces(points);
-    int res = events_handling(points);
+
+
     for (int i = 0; i < NB_SPRINGS;i++){
+        if (i == 1) continue;
         update_spring(springs[i]);
+        if (i == 0 || i == NB_SPRINGS - 1) SDL_SetRenderDrawColor(renderer,255,0,0,255);
+        
         int p1_x = springs[i]->p1->pos.x;
         int p1_y = springs[i]->p1->pos.y;
         int p2_x = springs[i]->p2->pos.x;
         int p2_y = springs[i]->p2->pos.y;
         SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
     }
+
     update_positions(points,dt);
+    /*for (int i = 0; i < NB_STICKS;i++){
+        SDL_SetRenderDrawColor(renderer,20 * (i + 1),20 * (i + 1),20 * (i + 1),255);
+        update_stick(sticks[i]);
+        int p1_x = sticks[i].p1->pos.x;
+        int p1_y = sticks[i].p1->pos.y;
+        int p2_x = sticks[i].p2->pos.x;
+        int p2_y = sticks[i].p2->pos.y;
+        SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
+    }*/
     update_velocities(points,dt);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
     for (int i = 0; i < NB_POINTS;i++){
         int x = points[i]->pos.x;
         int y = points[i]->pos.y;
         DrawCircle(renderer,x,y,10);
     }
     SDL_RenderPresent(renderer);
-    return res;
 }
 
 int main(void){
@@ -112,16 +133,17 @@ int main(void){
     if (status == 1) return EXIT_FAILURE;
     point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
     spring** springs = create_springs(points);
-    
+    stick* sticks;
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    
+    int count = 0;
     while (true) {
-      int res = events_handling(points);
+      int res = events_handling(points,&count);
       if (res == 1) break;
-      if (euler_step(renderer,points,springs,DT) == -1) break;
-      SDL_Delay(16);
+      euler_step(renderer,points,springs,sticks,DT);
+      count++;
+      SDL_Delay(7);
     }
     for (int i = 0; i < NB_POINTS; i++){
       free(points[i]);
@@ -136,5 +158,3 @@ int main(void){
     SDL_DestroyWindow(window);
     return 0;
 }
-
-//gcc particle.c -o particle -Wall -Wvla -Wextra -fsanitize=address $(sdl2-config --cflags) -lSDL2 -lm

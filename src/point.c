@@ -36,8 +36,8 @@ point** create_points(int WIDTH,int HEIGHT){
     point** points = malloc(sizeof(point*) * NB_POINTS);
     vect2 mid = {.x = WIDTH / 2, .y = HEIGHT/2};
 
-    points[0] = create_point(WIDTH/4,mid.y,true,3);
-    points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,3);
+    points[0] = create_point(WIDTH/4,mid.y,true,2);
+    points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,2);
 
     points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
     points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
@@ -45,6 +45,7 @@ point** create_points(int WIDTH,int HEIGHT){
     points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,5);
     points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
     points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
+    
     return points;
 }
 
