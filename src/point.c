@@ -14,6 +14,8 @@ point* create_point(double x, double y, bool fixed,int nb_springs){
     vect2 zero_vect = {.x = 0.0, .y = 0.0};
     p->force = zero_vect;
     p->mass = 1;
+    p->prev_vel = zero_vect;
+    p->vel = zero_vect;
     return p;
 }
 
@@ -32,11 +34,14 @@ o                         o               o                         o   7
 
                         5 o             6 o
 
+
+Bottom part is essential to maintain the structure. Probably won't be drawn onto the actual screen.
 */
 point** create_points(int WIDTH,int HEIGHT){
     point** points = malloc(sizeof(point*) * NB_POINTS);
     vect2 mid = {.x = WIDTH / 2, .y = HEIGHT/2};
 
+    //fixed points
     points[0] = create_point(WIDTH/10,mid.y,true,1);
     points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,true,1);
 
@@ -71,13 +76,13 @@ void update_positions(point** points,double dt){
             points[i]->pos.x = new_x;
             points[i]->pos.y = new_y;
         }
-    }
-    
+    }   
 }
 
 void update_velocities(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
+            points[i]->prev_vel = points[i]->vel;
             points[i]->vel.x = (points[i]->pos.x - points[i]->prev_pos.x)/dt;
             points[i]->vel.y = (points[i]->pos.y - points[i]->prev_pos.y)/dt;
         }
