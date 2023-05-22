@@ -9,8 +9,6 @@
 #define SCREEN_HEIGHT 768
 #define DT 0.006
 
-
-
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
    const int32_t diameter = (radius * 2);
    int32_t x = (radius - 1);
@@ -90,14 +88,10 @@ void euler_step(SDL_Renderer* renderer,point** points,spring** springs,stick* st
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    
     clear_forces(points);
-
-
     for (int i = 0; i < NB_SPRINGS;i++){
-        if (i == 1) continue;
         update_spring(springs[i]);
-        if (i == 0 || i == NB_SPRINGS - 1) SDL_SetRenderDrawColor(renderer,255,0,0,255);
-        
         int p1_x = springs[i]->p1->pos.x;
         int p1_y = springs[i]->p1->pos.y;
         int p2_x = springs[i]->p2->pos.x;
@@ -105,7 +99,7 @@ void euler_step(SDL_Renderer* renderer,point** points,spring** springs,stick* st
         SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
     }
-
+    printf("\n\n\n");
     update_positions(points,dt);
     /*for (int i = 0; i < NB_STICKS;i++){
         SDL_SetRenderDrawColor(renderer,20 * (i + 1),20 * (i + 1),20 * (i + 1),255);
@@ -123,10 +117,6 @@ void euler_step(SDL_Renderer* renderer,point** points,spring** springs,stick* st
         int y = points[i]->pos.y;
         DrawCircle(renderer,x,y,10);
     }
-    int x1 = points[1]->pos.x;
-    int y1 = points[1]->pos.y;
-    SDL_SetRenderDrawColor(renderer,0,255,0,255);
-    DrawCircle(renderer,x1,y1,10);
     SDL_RenderPresent(renderer);
 }
 

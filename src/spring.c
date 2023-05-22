@@ -34,44 +34,31 @@ spring** create_springs(point** points){
     
     //actual springs that will have an impact on reducing waves amplitude
     
-    springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[1] = create_spring(points[0],points[2],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[2] = create_spring(points[1],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[3] = create_spring(points[1],points[2],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
-
-    /*
-    springs[14] = create_spring(points[0],points[7],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[15] = create_spring(points[0],points[2],SOFT_STIFFNESS,SOFT_DAMPING);
-    */
+    springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS2,SOFT_DAMPING);
     
     //rigid springs : they help maintain the building as a structure
-    /*
-    springs[1] = create_spring(points[1],points[2],0,0);
-    springs[2] = create_spring(points[3],points[4],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[3] = create_spring(points[5],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[4] = create_spring(points[1],points[3],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[5] = create_spring(points[4],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[6] = create_spring(points[1],points[5],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[7] = create_spring(points[6],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[8] = create_spring(points[3],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[9] = create_spring(points[1],points[4],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[10] = create_spring(points[6],points[1],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[11] = create_spring(points[5],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[12] = create_spring(points[3],points[5],RIGID_STIFFNESS,RIGID_DAMPING);
-    springs[13] = create_spring(points[4],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
-    */
+    springs[1] = create_spring(points[1],points[3],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[2] = create_spring(points[3],points[4],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[3] = create_spring(points[4],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[4] = create_spring(points[2],points[6],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[5] = create_spring(points[6],points[5],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[6] = create_spring(points[1],points[5],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[7] = create_spring(points[1],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[8] = create_spring(points[1],points[4],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[9] = create_spring(points[3],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[10] = create_spring(points[1],points[6],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[11] = create_spring(points[5],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
     return springs;
 }
 
 void update_spring(spring* s){
     //Force should be F = stiffness * ((p1_pos - p0_pos) - s->length) + k_damper * (v1 - v0)
-
+    
     vect2 pos_diff = vect2_diff(s->p1->pos,s->p2->pos);
     vect2 vel_diff = vect2_diff(s->p1->vel,s->p2->vel);
-
-    float distance = vect2_length(pos_diff);
     
+    float distance = vect2_length(pos_diff);
     double coeff =  - (s->stiffness * (distance - s->length) + s->damping * dot_product(vel_diff,pos_diff) / distance);
     
     vect2 f1 = vect2_multiply(pos_diff,coeff / distance);
@@ -81,7 +68,7 @@ void update_spring(spring* s){
         apply_force(s->p1,f1);
     }
     if (!s->p2->is_fixed){
-        apply_force(s->p1,f2);
+        apply_force(s->p2,f2);
     }
     
 }
