@@ -14,7 +14,7 @@ spring* create_spring(point* p1,point* p2,double stiffness, double damping){
 }
 
 /* 
-Creates springs like those. (numbers are the spring index in the `springs` array)
+Creates springs like this. (numbers are the spring index in the `springs` array)
 Add diagonals but I'm too lazy for that.
                                   2
                            o ------------ o  
@@ -31,7 +31,6 @@ spring** create_springs(point** points){
     spring** springs = malloc(sizeof(spring*) * NB_SPRINGS);
     
     //actual springs that will have an impact on reducing waves amplitude
-    
     springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS,SOFT_DAMPING);
     springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
     

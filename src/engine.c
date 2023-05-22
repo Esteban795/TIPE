@@ -2,10 +2,16 @@
 #include <stdbool.h>
 #include "../include/point.h"
 #include "../include/spring.h"
+#include "../include/data.h"
+
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define DT 0.006
+#define DT 0.016
+
+
+bool MOVED = false;
+
 
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
    const int32_t diameter = (radius * 2);
@@ -77,26 +83,27 @@ int events_handling(point** points,int* count){
         switch (e.type) {
           case SDL_QUIT:
               return 1;
-          
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
                 *count = -25;
+                MOVED = true;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 1; 
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
                                 
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
                 *count = -25;
+                MOVED = true;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x += 1;    
-                  
+                  if (!points[i]->is_fixed) points[i]->pos.x += 2;    
                 }
               }
               if (e.key.keysym.sym == SDLK_r){
+                MOVED = false;
                 return -1;
               }
               
@@ -108,6 +115,7 @@ int events_handling(point** points,int* count){
   return 0;
 }
 
+
 int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, const char* title){
     if (SDL_Init(SDL_INIT_VIDEO) != 0) return 1;
     *window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_SHOWN);
@@ -117,33 +125,46 @@ int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, 
     return 0;
 }
 
-int main(void){
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"Tuned Mass Damper simulation, by Esteban795 on Github.");
-    if (status == 1) return EXIT_FAILURE;
+int main(int argc,char* argv[]){
+  if (argc != 2) return EXIT_FAILURE;
+
+    int nb_samples = atoi(argv[1]);
+    int* data = malloc(sizeof(float) * nb_samples);
+    int index = 0; //index in `data` arr
+    int nb_dt = 0;
+    int count = 0; //used to keep track of how many impulse we already set.
     point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
     spring** springs = create_springs(points);
 
+
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"Tuned Mass Damper simulation, by Esteban795.");
+    if (status == 1) return EXIT_FAILURE;
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    int count = 0; //used to keep track of how many impulse we already set.
+
+
+     
     while (true) {
-      int res = events_handling(points,&count);
-      if (res == 1) break; // exit programs
-      else if (res == -1) { //reset points and springs system (in case it crashes )
-        delete_points(points);
-        delete_springs(springs);
-        points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
-        springs = create_springs(points);
-      }
-      verlet_step(renderer,points,springs,DT);
-      count++;
-      SDL_Delay(7);
+        int res = events_handling(points,&count);
+        if (res == 1) break; // exits program
+        else if (res == -1) {
+            delete_points(points);
+            delete_springs(springs);
+            points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
+            springs = create_springs(points);
+        }
+        verlet_step(renderer,points,springs,DT);
+        count++;
+        if (write_to_arr(data,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
+        SDL_Delay(6);
     }
 
-    //cleans used variables
+    save_to_file("./data/data.txt",data,nb_samples);
+    
+    free(data);
     delete_points(points);
     delete_springs(springs);
     SDL_DestroyRenderer(renderer);
