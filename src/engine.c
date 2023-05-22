@@ -3,8 +3,8 @@
 #include "../include/point.h"
 #include "../include/spring.h"
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 #define DT 0.006
 
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
@@ -38,13 +38,36 @@ void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_
 }
 
 
-int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, const char* title){
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) return 1;
-    *window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_SHOWN);
-    if (*window == NULL) return 1;
-    *renderer = SDL_CreateRenderer(*window,-1,SDL_RENDERER_ACCELERATED);
-    if (*renderer == NULL) return 1;
-    return 0;
+void draw_spring(SDL_Renderer* renderer,spring* s){
+      int p1_x = s->p1->pos.x;
+      int p1_y = s->p1->pos.y;
+      int p2_x = s->p2->pos.x;
+      int p2_y = s->p2->pos.y;
+      SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
+}
+
+
+void verlet_step(SDL_Renderer* renderer,point** points,spring** springs,double dt){
+
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    
+    clear_forces(points);
+    for (int i = 0; i < NB_SPRINGS;i++){
+        update_spring(springs[i]);
+        draw_spring(renderer,springs[i]);
+    }
+
+    update_positions(points,dt);
+    update_velocities(points,dt);
+
+    for (int i = 0; i < NB_POINTS;i++){
+        int x = points[i]->pos.x;
+        int y = points[i]->pos.y;
+        DrawCircle(renderer,x,y,10);
+    }
+    SDL_RenderPresent(renderer);
 }
 
 
@@ -58,20 +81,23 @@ int events_handling(point** points,int* count){
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
-                *count = -50;
+                *count = -25;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 1; 
                                 
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
-                *count = -50;
+                *count = -25;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x += 2;    
+                  if (!points[i]->is_fixed) points[i]->pos.x += 1;    
                   
                 }
+              }
+              if (e.key.keysym.sym == SDLK_r){
+                return -1;
               }
               
             }
@@ -82,59 +108,44 @@ int events_handling(point** points,int* count){
   return 0;
 }
 
-void euler_step(SDL_Renderer* renderer,point** points,spring** springs,double dt){
-    SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    
-    clear_forces(points);
-    for (int i = 0; i < NB_SPRINGS;i++){
-        update_spring(springs[i]);
-        int p1_x = springs[i]->p1->pos.x;
-        int p1_y = springs[i]->p1->pos.y;
-        int p2_x = springs[i]->p2->pos.x;
-        int p2_y = springs[i]->p2->pos.y;
-        SDL_RenderDrawLine(renderer,p1_x,p1_y,p2_x,p2_y);
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    }
-    update_positions(points,dt);
-    update_velocities(points,dt);
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    for (int i = 0; i < NB_POINTS;i++){
-        int x = points[i]->pos.x;
-        int y = points[i]->pos.y;
-        DrawCircle(renderer,x,y,10);
-    }
-    SDL_RenderPresent(renderer);
+int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, const char* title){
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) return 1;
+    *window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_SHOWN);
+    if (*window == NULL) return 1;
+    *renderer = SDL_CreateRenderer(*window,-1,SDL_RENDERER_ACCELERATED);
+    if (*renderer == NULL) return 1;
+    return 0;
 }
 
 int main(void){
     SDL_Window* window;
     SDL_Renderer* renderer;
-    int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"test");
+    int status = start_SDL(&window,&renderer,SCREEN_WIDTH,SCREEN_HEIGHT,"Tuned Mass Damper simulation, by Esteban795 on Github.");
     if (status == 1) return EXIT_FAILURE;
     point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
     spring** springs = create_springs(points);
+
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    int count = 0;
+    int count = 0; //used to keep track of how many impulse we already set.
     while (true) {
       int res = events_handling(points,&count);
-      if (res == 1) break;
-      euler_step(renderer,points,springs,DT);
+      if (res == 1) break; // exit programs
+      else if (res == -1) { //reset points and springs system (in case it crashes )
+        delete_points(points);
+        delete_springs(springs);
+        points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
+        springs = create_springs(points);
+      }
+      verlet_step(renderer,points,springs,DT);
       count++;
       SDL_Delay(7);
     }
-    for (int i = 0; i < NB_POINTS; i++){
-      free(points[i]);
-    }
-    free(points);
 
-    for (int i = 0; i < NB_SPRINGS; i++){
-      free(springs[i]);
-    }
-    free(springs);
+    //cleans used variables
+    delete_points(points);
+    delete_springs(springs);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     return 0;

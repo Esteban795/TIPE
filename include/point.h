@@ -6,8 +6,8 @@
 #include "vect2.h"
 
 #define NB_POINTS 8
-#define BUILDING_HWIDTH 50
-#define BUILDING_HHEIGHT 50
+#define BUILDING_HWIDTH 100
+#define BUILDING_HHEIGHT 500
 
 struct Spring;
 struct Point;
@@ -20,6 +20,8 @@ struct Spring {
     double damping;
 };
 
+
+//Even though we use verlet integration, we keep track of points' velocities to apply dampering forces
 struct Point { 
     struct Spring** springs;
     int nb_springs;
@@ -46,4 +48,7 @@ void update_positions(point** points,double dt);
 void update_velocities(point** points,double dt);
 
 void clear_forces(point** points);
+
+void delete_points(point** points);
+
 #endif

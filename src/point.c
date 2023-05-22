@@ -40,12 +40,12 @@ point** create_points(int WIDTH,int HEIGHT){
     points[0] = create_point(WIDTH/10,mid.y,true,1);
     points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,true,1);
 
-    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,2);
-    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,2);
-    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
-    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,3);
-    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
-    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,3);
+    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
+    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
+    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4);
+    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4);
+    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4);
+    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4);
     return points;
 }
 
@@ -82,4 +82,11 @@ void update_velocities(point** points,double dt){
             points[i]->vel.y = (points[i]->pos.y - points[i]->prev_pos.y)/dt;
         }
     }
+}
+
+void delete_points(point** points){
+    for (int i = 0; i < NB_POINTS;i++){
+        free(points[i]);
+    }
+    free(points);
 }

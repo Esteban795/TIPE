@@ -1,8 +1,6 @@
 #include "../include/spring.h"
 
 
-
-
 spring* create_spring(point* p1,point* p2,double stiffness, double damping){
     spring* s = malloc(sizeof(spring));
     s->p1 = p1;
@@ -53,10 +51,9 @@ spring** create_springs(point** points){
 }
 
 void update_spring(spring* s){
-    //Force should be F = stiffness * ((p1_pos - p0_pos) - s->length) + k_damper * (v1 - v0)
+    //Force should be F = - stiffness * ((p1_pos - p0_pos) - s->length) + k_damper * (v1 - v0)
     
     vect2 pos_diff = vect2_diff(s->p1->pos,s->p2->pos);
-    
     vect2 vel_diff = vect2_diff(s->p1->vel,s->p2->vel);
     
     float distance = vect2_length(pos_diff);
@@ -72,4 +69,11 @@ void update_spring(spring* s){
         apply_force(s->p2,f2);
     }
     
+}
+
+void delete_springs(spring** springs){
+    for (int i = 0; i < NB_SPRINGS; i++){
+        free(springs[i]);
+    }
+    free(springs);
 }
