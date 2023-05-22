@@ -14,7 +14,6 @@ point* create_point(double x, double y, bool fixed,int nb_springs){
     vect2 zero_vect = {.x = 0.0, .y = 0.0};
     p->force = zero_vect;
     p->mass = 1;
-    p->prev_vel = zero_vect;
     p->vel = zero_vect;
     return p;
 }
@@ -82,7 +81,6 @@ void update_positions(point** points,double dt){
 void update_velocities(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
-            points[i]->prev_vel = points[i]->vel;
             points[i]->vel.x = (points[i]->pos.x - points[i]->prev_pos.x)/dt;
             points[i]->vel.y = (points[i]->pos.y - points[i]->prev_pos.y)/dt;
         }
