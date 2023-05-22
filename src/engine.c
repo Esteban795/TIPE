@@ -86,7 +86,7 @@ int events_handling(point** points,int* count){
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
-                *count = -25;
+                *count = -50;
                 MOVED = true;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
@@ -95,7 +95,7 @@ int events_handling(point** points,int* count){
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
-                *count = -25;
+                *count = -50;
                 MOVED = true;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
@@ -129,7 +129,8 @@ int main(int argc,char* argv[]){
   if (argc != 2) return EXIT_FAILURE;
 
     int nb_samples = atoi(argv[1]);
-    int* data = malloc(sizeof(float) * nb_samples);
+    int* data_sol = malloc(sizeof(float) * nb_samples);
+    int* data_top = malloc(sizeof(float) * nb_samples);
     int index = 0; //index in `data` arr
     int nb_dt = 0;
     int count = 0; //used to keep track of how many impulse we already set.
@@ -155,16 +156,17 @@ int main(int argc,char* argv[]){
             delete_springs(springs);
             points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
             springs = create_springs(points);
-        }
+        }    
         verlet_step(renderer,points,springs,DT);
         count++;
-        if (write_to_arr(data,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
-        SDL_Delay(6);
+        if (write_to_arr(data_sol,data_top,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
+        SDL_Delay(16);
     }
 
-    save_to_file("./data/data.txt",data,nb_samples);
+    save_to_file("./data/data.txt",data_sol,data_top,nb_samples,SOFT_STIFFNESS,SOFT_DAMPING,BUILDING_HHEIGHT);
     
-    free(data);
+    free(data_sol);
+    free(data_top);
     delete_points(points);
     delete_springs(springs);
     SDL_DestroyRenderer(renderer);
