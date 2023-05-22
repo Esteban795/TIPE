@@ -5,7 +5,7 @@
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-#define DT 0.016
+#define DT 0.006
 
 void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius){
    const int32_t diameter = (radius * 2);
@@ -61,7 +61,7 @@ int events_handling(point** points,int* count){
                 *count = -50;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 5; 
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
                                 
                 }
               }
@@ -69,7 +69,7 @@ int events_handling(point** points,int* count){
                 *count = -50;
                 if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x += 5;    
+                  if (!points[i]->is_fixed) points[i]->pos.x += 2;    
                   
                 }
               }

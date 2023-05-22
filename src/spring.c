@@ -38,17 +38,17 @@ spring** create_springs(point** points){
     springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
     
     //rigid springs : they help maintain the building as a structure
-    springs[1] = create_spring(points[1],points[3],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[2] = create_spring(points[3],points[4],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[3] = create_spring(points[4],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[4] = create_spring(points[2],points[6],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[5] = create_spring(points[6],points[5],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[6] = create_spring(points[1],points[5],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[7] = create_spring(points[1],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[8] = create_spring(points[1],points[4],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[9] = create_spring(points[3],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[10] = create_spring(points[1],points[6],RIGID_STIFFNESS,SOFT_DAMPING);
-    springs[11] = create_spring(points[5],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[1] = create_spring(points[1],points[3],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[2] = create_spring(points[3],points[4],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[3] = create_spring(points[4],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[4] = create_spring(points[2],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[5] = create_spring(points[6],points[5],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[6] = create_spring(points[1],points[5],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[7] = create_spring(points[1],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[8] = create_spring(points[1],points[4],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[9] = create_spring(points[3],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[10] = create_spring(points[1],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[11] = create_spring(points[5],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
     return springs;
 }
 
@@ -56,6 +56,7 @@ void update_spring(spring* s){
     //Force should be F = stiffness * ((p1_pos - p0_pos) - s->length) + k_damper * (v1 - v0)
     
     vect2 pos_diff = vect2_diff(s->p1->pos,s->p2->pos);
+    
     vect2 vel_diff = vect2_diff(s->p1->vel,s->p2->vel);
     
     float distance = vect2_length(pos_diff);

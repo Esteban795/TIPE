@@ -26,6 +26,7 @@ struct Point {
     int available_spring_index; 
     vect2 pos;
     vect2 vel;
+    vect2 prev_pos;
     vect2 force;
     double mass;
     bool is_fixed;

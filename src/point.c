@@ -6,6 +6,7 @@ point* create_point(double x, double y, bool fixed,int nb_springs){
     point* p = malloc(sizeof(point));
     vect2 pos = {.x = x, .y = y};
     p->pos = pos;
+    p->prev_pos = pos;
     p->is_fixed = fixed;
     p->nb_springs = nb_springs;
     p->springs = malloc(sizeof(spring) * nb_springs);
@@ -36,8 +37,8 @@ point** create_points(int WIDTH,int HEIGHT){
     point** points = malloc(sizeof(point*) * NB_POINTS);
     vect2 mid = {.x = WIDTH / 2, .y = HEIGHT/2};
 
-    points[0] = create_point(WIDTH/4,mid.y,true,1);
-    points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,1);
+    points[0] = create_point(WIDTH/10,mid.y,true,1);
+    points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,true,1);
 
     points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,2);
     points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,2);
@@ -60,12 +61,15 @@ void clear_forces(point** points){
     }
 }
 
-//Euler integration to update every points position
+//Verlet integration to update every points position
 void update_positions(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
-            vect2 temp = vect2_multiply(points[i]->vel,dt);
-            points[i]->pos = vect2_add(points[i]->pos,temp);
+            double new_x = 2 * points[i]->pos.x - points[i]->prev_pos.x + points[i]->force.x * dt * dt;
+            double new_y = 2 * points[i]->pos.y - points[i]->prev_pos.y + points[i]->force.y * dt * dt; 
+            points[i]->prev_pos = points[i]->pos;
+            points[i]->pos.x = new_x;
+            points[i]->pos.y = new_y;
         }
     }
     
@@ -74,9 +78,8 @@ void update_positions(point** points,double dt){
 void update_velocities(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
-            vect2 accel = vect2_multiply(points[i]->force,1.0/points[i]->mass);
-            vect2 temp = vect2_multiply(accel,dt);
-            points[i]->vel = vect2_add(points[i]->vel,temp);
+            points[i]->vel.x = (points[i]->pos.x - points[i]->prev_pos.x)/dt;
+            points[i]->vel.y = (points[i]->pos.y - points[i]->prev_pos.y)/dt;
         }
     }
 }
