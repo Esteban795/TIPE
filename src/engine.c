@@ -63,7 +63,7 @@ int events_handling(point** points,int* count){
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
                 *count = -50;
-                if (*count > 0) return;
+                if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
                   if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
                                 
@@ -71,9 +71,9 @@ int events_handling(point** points,int* count){
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
                 *count = -50;
-                if (*count > 0) return;
+                if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x += 50;    
+                  if (!points[i]->is_fixed) points[i]->pos.x += 2;    
                   
                 }
               }
@@ -123,6 +123,10 @@ void euler_step(SDL_Renderer* renderer,point** points,spring** springs,stick* st
         int y = points[i]->pos.y;
         DrawCircle(renderer,x,y,10);
     }
+    int x1 = points[1]->pos.x;
+    int y1 = points[1]->pos.y;
+    SDL_SetRenderDrawColor(renderer,0,255,0,255);
+    DrawCircle(renderer,x1,y1,10);
     SDL_RenderPresent(renderer);
 }
 

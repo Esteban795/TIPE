@@ -2,12 +2,12 @@
 #define SPRING_H
 
 #include "point.h"
+//old value : 17
+#define NB_SPRINGS 5
 
-#define NB_SPRINGS 17
-
-#define RIGID_STIFFNESS 50
-#define SOFT_STIFFNESS 3
-#define RIGID_DAMPING 50
+#define RIGID_STIFFNESS 10
+#define SOFT_STIFFNESS 1
+#define RIGID_DAMPING 10
 #define SOFT_DAMPING 0.5
 
 

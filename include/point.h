@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include "vect2.h"
 
-
-#define NB_POINTS 8
+//old value 8
+#define NB_POINTS 4
 #define BUILDING_HWIDTH 50
 #define BUILDING_HHEIGHT 50
 

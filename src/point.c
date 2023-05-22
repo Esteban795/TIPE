@@ -12,7 +12,7 @@ point* create_point(double x, double y, bool fixed,int nb_springs){
     p->available_spring_index = 0;
     vect2 zero_vect = {.x = 0.0, .y = 0.0};
     p->force = zero_vect;
-    p->mass = 1.0;
+    p->mass = 1;
     return p;
 }
 
@@ -39,13 +39,14 @@ point** create_points(int WIDTH,int HEIGHT){
     points[0] = create_point(WIDTH/4,mid.y,true,2);
     points[NB_POINTS - 1] = create_point(3 * WIDTH/4,mid.y,true,2);
 
-    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
-    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
+    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,2);
+    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,2);
+    /*
     points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,5);
     points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,5);
     points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
     points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,5);
-    
+    */
     return points;
 }
 
