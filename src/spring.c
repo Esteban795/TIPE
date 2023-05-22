@@ -1,20 +1,7 @@
 #include "../include/spring.h"
 
 
-/* 
-Creates springs like those. (numbers are the spring index in the `springs` array)
 
-                                  2
-                           o ------------ o  
-                        4  |              |  5
-                           |              |
-o ------------------------ o ------------ o ----------------------- o                   
-            0              |      1       |       8
-                        6  |              |  7
-                           o ------------ o
-                                  3
-
-*/
 
 spring* create_spring(point* p1,point* p2,double stiffness, double damping){
     spring* s = malloc(sizeof(spring));
@@ -28,27 +15,40 @@ spring* create_spring(point* p1,point* p2,double stiffness, double damping){
     return s;
 }
 
+/* 
+Creates springs like those. (numbers are the spring index in the `springs` array)
+Add diagonals but I'm too lazy for that.
+                                  2
+                           o ------------ o  
+                        4  |              |  5
+                           |              |
+o ------------------------ o ------------ o ----------------------- o                   
+            0              |      1       |       8
+                        6  |              |  7
+                           o ------------ o
+                                  3
 
+*/
 spring** create_springs(point** points){
     spring** springs = malloc(sizeof(spring*) * NB_SPRINGS);
     
     //actual springs that will have an impact on reducing waves amplitude
     
-    springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS2,SOFT_DAMPING);
+    springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS,SOFT_DAMPING);
+    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
     
     //rigid springs : they help maintain the building as a structure
-    springs[1] = create_spring(points[1],points[3],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[2] = create_spring(points[3],points[4],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[3] = create_spring(points[4],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[4] = create_spring(points[2],points[6],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[5] = create_spring(points[6],points[5],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[6] = create_spring(points[1],points[5],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[7] = create_spring(points[1],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[8] = create_spring(points[1],points[4],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[9] = create_spring(points[3],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[10] = create_spring(points[1],points[6],SOFT_STIFFNESS1,SOFT_DAMPING);
-    springs[11] = create_spring(points[5],points[2],SOFT_STIFFNESS1,SOFT_DAMPING);
+    springs[1] = create_spring(points[1],points[3],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[2] = create_spring(points[3],points[4],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[3] = create_spring(points[4],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[4] = create_spring(points[2],points[6],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[5] = create_spring(points[6],points[5],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[6] = create_spring(points[1],points[5],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[7] = create_spring(points[1],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[8] = create_spring(points[1],points[4],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[9] = create_spring(points[3],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[10] = create_spring(points[1],points[6],RIGID_STIFFNESS,SOFT_DAMPING);
+    springs[11] = create_spring(points[5],points[2],RIGID_STIFFNESS,SOFT_DAMPING);
     return springs;
 }
 
