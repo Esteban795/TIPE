@@ -89,6 +89,7 @@ void update_velocities(point** points,double dt){
 
 void delete_points(point** points){
     for (int i = 0; i < NB_POINTS;i++){
+        free(points[i]->springs);
         free(points[i]);
     }
     free(points);
