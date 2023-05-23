@@ -23,10 +23,11 @@ plt.xlabel("Time (ms)")
 plt.ylabel("X axis (pixels)")
 ax.plot(time,positions_sol,linewidth=1.0)
 ax.plot(time,positions_top,linewidth=1.0)
-string = f"Rigidité : {stiffness}\n Coefficient d'amortissement : {damping}\n Hauteur du bâtiment : {B_H}"
-
+string = f"Rigidité : {stiffness}\nCoefficient d'amortissement : {damping}\nHauteur du bâtiment : {B_H}"
+ax.legend("")
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.6, 0.95, string, transform=ax.transAxes, fontsize=9,verticalalignment='top', bbox=props)
 ax.set(xlim=(0,time[-1]))
 
+plt.gca().legend(('Position au sol.','Position en haut du bâtiment.'),loc='lower right')
 plt.show()
