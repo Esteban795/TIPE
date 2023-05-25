@@ -18,4 +18,4 @@ clean:
 
 all:
 	make build
-	make run NB_SAMPLES="3000"
+	make run NB_SAMPLES="4000"

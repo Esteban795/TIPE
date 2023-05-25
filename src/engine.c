@@ -7,7 +7,7 @@
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define DT 0.016
+#define DT 0.006
 
 
 bool MOVED = false;
@@ -86,20 +86,20 @@ int events_handling(point** points,int* count){
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
-                *count = -50;
+                *count = -25;
                 MOVED = true;
                 if (*count > 0) break;
-                for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 2; 
+                for (int i = 0; i < NB_POINTS - 1;i++){
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 1; 
                                 
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
-                *count = -50;
+                *count = -25;
                 MOVED = true;
                 if (*count > 0) break;
-                for (int i = 0; i < NB_POINTS;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x += 2;    
+                for (int i = 0; i < NB_POINTS - 1;i++){
+                  if (!points[i]->is_fixed) points[i]->pos.x += 1;    
                 }
               }
               if (e.key.keysym.sym == SDLK_r){
@@ -160,7 +160,7 @@ int main(int argc,char* argv[]){
         verlet_step(renderer,points,springs,DT);
         count++;
         if (write_to_arr(data_sol,data_top,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
-        SDL_Delay(16);
+        SDL_Delay(6);
     }
 
     save_to_file("./data/data.txt",data_sol,data_top,nb_samples,SOFT_STIFFNESS,SOFT_DAMPING,BUILDING_HHEIGHT);

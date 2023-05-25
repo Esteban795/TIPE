@@ -30,9 +30,9 @@ o ------------------------ o ------------ o ----------------------- o
 spring** create_springs(point** points){
     spring** springs = malloc(sizeof(spring*) * NB_SPRINGS);
     
-    //actual springs that will have an impact on reducing waves amplitude
+    //actual springs that will have an impact on creating/reducing waves amplitude
     springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS,SOFT_DAMPING);
-    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],SOFT_STIFFNESS,SOFT_DAMPING);
+    //springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],TMD_STIFFNESS,TMD_DAMPING);
     
     //rigid springs : they help maintain the building as a structure
     springs[1] = create_spring(points[1],points[3],RIGID_STIFFNESS,RIGID_DAMPING);

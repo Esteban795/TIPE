@@ -2,7 +2,7 @@
 
 
 
-point* create_point(double x, double y, bool fixed,int nb_springs){
+point* create_point(double x, double y, bool fixed,int nb_springs,double mass){
     point* p = malloc(sizeof(point));
     vect2 pos = {.x = x, .y = y};
     p->pos = pos;
@@ -13,7 +13,7 @@ point* create_point(double x, double y, bool fixed,int nb_springs){
     p->available_spring_index = 0;
     vect2 zero_vect = {.x = 0.0, .y = 0.0};
     p->force = zero_vect;
-    p->mass = 1;
+    p->mass = mass;
     p->vel = zero_vect;
     return p;
 }
@@ -28,7 +28,7 @@ WIDTH/4 to mid.x           BUILDING_WIDTH
                        3  o             4 o
 
 
-o                         o               o                         o   7                  
+o                         o               o                         o   7   TMD               
 0                          1              2
 
                         5 o             6 o
@@ -41,15 +41,15 @@ point** create_points(int WIDTH,int HEIGHT){
     vect2 mid = {.x = WIDTH / 2, .y = HEIGHT/2};
 
     //fixed points
-    points[0] = create_point(WIDTH/10,mid.y,true,1);
-    points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,true,1);
+    points[0] = create_point(WIDTH/10,mid.y,true,1,1);
+    points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,false,1,10);
 
-    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6);
-    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6);
-    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4);
-    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4);
-    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4);
-    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4);
+    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6,1);
+    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6,1);
+    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,1);
+    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,1);
+    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,1);
+    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,1);
     return points;
 }
 
@@ -69,8 +69,8 @@ void clear_forces(point** points){
 void update_positions(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
-            double new_x = 2 * points[i]->pos.x - points[i]->prev_pos.x + points[i]->force.x * dt * dt;
-            double new_y = 2 * points[i]->pos.y - points[i]->prev_pos.y + points[i]->force.y * dt * dt; 
+            double new_x = 2 * points[i]->pos.x - points[i]->prev_pos.x + points[i]->force.x * dt * dt / points[i]->mass;
+            double new_y = 2 * points[i]->pos.y - points[i]->prev_pos.y + points[i]->force.y * dt * dt / points[i]->mass; 
             points[i]->prev_pos = points[i]->pos;
             points[i]->pos.x = new_x;
             points[i]->pos.y = new_y;

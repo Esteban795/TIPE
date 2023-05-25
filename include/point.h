@@ -7,7 +7,7 @@
 
 #define NB_POINTS 8
 #define BUILDING_HWIDTH 100
-#define BUILDING_HHEIGHT 500
+#define BUILDING_HHEIGHT 200
 
 struct Spring;
 struct Point;

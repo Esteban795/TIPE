@@ -2,12 +2,15 @@
 #define SPRING_H
 
 #include "point.h"
-#define NB_SPRINGS 13
+#define NB_SPRINGS 12
 
-#define RIGID_STIFFNESS 4
-#define SOFT_STIFFNESS 2
-#define RIGID_DAMPING 3
+#define RIGID_STIFFNESS 10
+#define SOFT_STIFFNESS 3
+#define RIGID_DAMPING 10
 #define SOFT_DAMPING 0.5
+
+#define TMD_STIFFNESS 2
+#define TMD_DAMPING 10
 
 
 spring** create_springs(point** points);
