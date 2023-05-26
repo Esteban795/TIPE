@@ -9,9 +9,9 @@ int write_to_arr(int* data_sol,int* data_top,int len,bool started, int* index,in
     } else if (*index >= len) return 1;
 }
 
-void save_to_file(char* filename,int* data_sol, int* data_top,int len,double stiffness,double damping,double B_H){
+void save_to_file(char* filename,int* data_sol, int* data_top,int len,double stiffness,double damping,double B_H,double TMD_stiff){
     FILE* f_out = fopen(filename,"w");
-    fprintf(f_out,"%f %f %f\n",stiffness,damping,B_H);
+    fprintf(f_out,"%f %f %f %f\n",stiffness,damping,B_H,TMD_stiff);
     for (int i = 0; i < len ;i++) {
         fprintf(f_out,"%d %d %d\n",16 * i,data_sol[i],data_top[i]);
     }

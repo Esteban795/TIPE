@@ -42,14 +42,14 @@ point** create_points(int WIDTH,int HEIGHT){
 
     //fixed points
     points[0] = create_point(WIDTH/10,mid.y,true,1,1);
-    points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,false,1,10);
+    points[NB_POINTS - 1] = create_point(9 * WIDTH/10,mid.y,false,1,TMD_MASS);
 
-    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6,1);
-    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6,1);
-    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,1);
-    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,1);
-    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,1);
-    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,1);
+    points[1] = create_point(mid.x - BUILDING_HWIDTH,mid.y,false,6,POINT_MASS);
+    points[2] = create_point(mid.x + BUILDING_HWIDTH,mid.y,false,6,POINT_MASS);
+    points[3] = create_point(mid.x - BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,POINT_MASS);
+    points[4] = create_point(mid.x + BUILDING_HWIDTH,mid.y - BUILDING_HHEIGHT,false,4,POINT_MASS);
+    points[5] = create_point(mid.x - BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,POINT_MASS);
+    points[6] = create_point(mid.x + BUILDING_HWIDTH,mid.y + BUILDING_HHEIGHT,false,4,POINT_MASS);
     return points;
 }
 
@@ -69,8 +69,8 @@ void clear_forces(point** points){
 void update_positions(point** points,double dt){
     for (int i = 0; i < NB_POINTS; i++){
         if (!points[i]->is_fixed) {
-            double new_x = 2 * points[i]->pos.x - points[i]->prev_pos.x + points[i]->force.x * dt * dt / points[i]->mass;
-            double new_y = 2 * points[i]->pos.y - points[i]->prev_pos.y + points[i]->force.y * dt * dt / points[i]->mass; 
+            double new_x = 2 * points[i]->pos.x - points[i]->prev_pos.x + (points[i]->force.x * dt * dt / points[i]->mass);
+            double new_y = 2 * points[i]->pos.y - points[i]->prev_pos.y + (points[i]->force.y * dt * dt / points[i]->mass); 
             points[i]->prev_pos = points[i]->pos;
             points[i]->pos.x = new_x;
             points[i]->pos.y = new_y;

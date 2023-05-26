@@ -9,6 +9,11 @@
 #define BUILDING_HWIDTH 100
 #define BUILDING_HHEIGHT 200
 
+
+#define POINT_MASS 10.0
+#define TMD_MASS 100.0
+
+
 struct Spring;
 struct Point;
 

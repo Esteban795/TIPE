@@ -86,18 +86,15 @@ int events_handling(point** points,int* count){
           case SDL_KEYDOWN: {
               if (e.key.keysym.sym == SDLK_ESCAPE) return 1;
               if (e.key.keysym.sym == SDLK_LEFT) {
-                *count = -25;
                 MOVED = true;
-                if (*count > 0) break;
                 for (int i = 0; i < NB_POINTS - 1;i++){
                   if (!points[i]->is_fixed) points[i]->pos.x -= 1; 
                                 
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
-                *count = -25;
                 MOVED = true;
-                if (*count > 0) break;
+
                 for (int i = 0; i < NB_POINTS - 1;i++){
                   if (!points[i]->is_fixed) points[i]->pos.x += 1;    
                 }
@@ -163,7 +160,7 @@ int main(int argc,char* argv[]){
         SDL_Delay(6);
     }
 
-    save_to_file("./data/data.txt",data_sol,data_top,nb_samples,SOFT_STIFFNESS,SOFT_DAMPING,BUILDING_HHEIGHT);
+    save_to_file("./data/data.txt",data_sol,data_top,nb_samples,SOFT_STIFFNESS,SOFT_DAMPING,BUILDING_HHEIGHT,TMD_STIFFNESS);
     
     free(data_sol);
     free(data_top);

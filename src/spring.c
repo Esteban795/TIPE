@@ -32,7 +32,7 @@ spring** create_springs(point** points){
     
     //actual springs that will have an impact on creating/reducing waves amplitude
     springs[0] = create_spring(points[0],points[1],SOFT_STIFFNESS,SOFT_DAMPING);
-    //springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],TMD_STIFFNESS,TMD_DAMPING);
+    springs[NB_SPRINGS - 1] = create_spring(points[2],points[NB_POINTS - 1],TMD_STIFFNESS,TMD_DAMPING);
     
     //rigid springs : they help maintain the building as a structure
     springs[1] = create_spring(points[1],points[3],RIGID_STIFFNESS,RIGID_DAMPING);
@@ -46,6 +46,8 @@ spring** create_springs(point** points){
     springs[9] = create_spring(points[3],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
     springs[10] = create_spring(points[1],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
     springs[11] = create_spring(points[5],points[2],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[12] = create_spring(points[3],points[6],RIGID_STIFFNESS,RIGID_DAMPING);
+    springs[13] = create_spring(points[5],points[4],RIGID_STIFFNESS,RIGID_DAMPING);
     return springs;
 }
 
