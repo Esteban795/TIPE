@@ -18,4 +18,8 @@ clean:
 
 all:
 	make build
-	make run NB_SAMPLES="4000"
+	make run NB_SAMPLES="4000";clear
+	/bin/python3 ./src/plot.py
+		
+plot:
+	/bin/python3 ./src/plot.py
