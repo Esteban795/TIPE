@@ -99,11 +99,6 @@ int events_handling(point** points,int* count){
                   if (!points[i]->is_fixed) points[i]->pos.x += 1;    
                 }
               }
-              if (e.key.keysym.sym == SDLK_r){
-                MOVED = false;
-                return -1;
-              }
-              
             }
           default:
               break;
@@ -129,7 +124,7 @@ int main(int argc,char* argv[]){
     int* data_sol = malloc(sizeof(float) * nb_samples);
     int* data_top = malloc(sizeof(float) * nb_samples);
     int index = 0; //index in `data` arr
-    int nb_dt = 0;
+    int nb_dt = 0; //number of dt since start.
     int count = 0; //used to keep track of how many impulse we already set.
     point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
     spring** springs = create_springs(points);
@@ -143,17 +138,9 @@ int main(int argc,char* argv[]){
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
-
-     
     while (true) {
         int res = events_handling(points,&count);
-        if (res == 1) break; // exits program
-        else if (res == -1) {
-            delete_points(points);
-            delete_springs(springs);
-            points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
-            springs = create_springs(points);
-        }    
+        if (res == 1) break; // exits program   
         verlet_step(renderer,points,springs,DT);
         count++;
         if (write_to_arr(data_sol,data_top,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
