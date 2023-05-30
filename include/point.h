@@ -28,9 +28,6 @@ struct Spring {
 
 //Even though we use verlet integration, we keep track of points' velocities to apply dampering forces
 struct Point { 
-    struct Spring** springs;
-    int nb_springs;
-    int available_spring_index; 
     vect2 pos;
     vect2 vel;
     vect2 prev_pos;

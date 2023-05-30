@@ -5,8 +5,6 @@ spring* create_spring(point* p1,point* p2,double stiffness, double damping){
     spring* s = malloc(sizeof(spring));
     s->p1 = p1;
     s->p2 = p2;
-    p1->springs[p1->available_spring_index] = s;
-    p2->springs[p2->available_spring_index] = s;
     s->length = vect2_length(vect2_diff(p1->pos,p2->pos));
     s->stiffness = stiffness;
     s->damping = damping;
