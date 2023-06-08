@@ -77,7 +77,7 @@ void verlet_step(SDL_Renderer* renderer,point** points,spring** springs,double d
 }
 
 
-int events_handling(point** points,int* count){
+int events_handling(point** points){
     SDL_Event e;
     while (SDL_PollEvent(&e)){
         switch (e.type) {
@@ -88,13 +88,11 @@ int events_handling(point** points,int* count){
               if (e.key.keysym.sym == SDLK_LEFT) {
                 MOVED = true;
                 for (int i = 0; i < NB_POINTS - 1;i++){
-                  if (!points[i]->is_fixed) points[i]->pos.x -= 1; 
-                                
+                  if (!points[i]->is_fixed) points[i]->pos.x -= 1;           
                 }
               }
               if (e.key.keysym.sym == SDLK_RIGHT) {
                 MOVED = true;
-
                 for (int i = 0; i < NB_POINTS - 1;i++){
                   if (!points[i]->is_fixed) points[i]->pos.x += 1;    
                 }
@@ -117,15 +115,14 @@ int start_SDL(SDL_Window** window,SDL_Renderer** renderer,int width,int height, 
     return 0;
 }
 
-int main(int argc,char* argv[]){
-  if (argc != 2) return EXIT_FAILURE;
 
+int main(int argc,char* argv[]){
+    if (argc != 2) return EXIT_FAILURE;
     int nb_samples = atoi(argv[1]);
     int* data_sol = malloc(sizeof(float) * nb_samples);
     int* data_top = malloc(sizeof(float) * nb_samples);
     int index = 0; //index in `data` arr
     int nb_dt = 0; //number of dt since start.
-    int count = 0; //used to keep track of how many impulse we already set.
     point** points = create_points(SCREEN_WIDTH,SCREEN_HEIGHT);
     spring** springs = create_springs(points);
 
@@ -139,10 +136,9 @@ int main(int argc,char* argv[]){
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
     while (true) {
-        int res = events_handling(points,&count);
+        int res = events_handling(points);
         if (res == 1) break; // exits program   
         verlet_step(renderer,points,springs,DT);
-        count++;
         if (write_to_arr(data_sol,data_top,nb_samples,MOVED,&index,nb_dt,points) == 1) break;
         SDL_Delay(6);
     }
